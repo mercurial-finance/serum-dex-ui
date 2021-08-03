@@ -40,7 +40,8 @@ const LogoWrapper = styled.div`
 `;
 
 const EXTERNAL_LINKS = {
-  '/learn': 'https://docs.projectserum.com/trade-on-serum-dex/trade-on-serum-dex-1',
+  '/learn':
+    'https://docs.projectserum.com/trade-on-serum-dex/trade-on-serum-dex-1',
   '/add-market': 'https://serum-academy.com/en/add-market/',
   '/wallet-support': 'https://serum-academy.com/en/wallet-support',
   '/dex-list': 'https://serum-academy.com/en/dex-list/',
@@ -96,7 +97,7 @@ export default function TopBar() {
     try {
       const connection = new Connection(info.endpoint, 'recent');
       connection
-        .getEpochInfo()
+        .getBlockTime(0)
         .then((result) => {
           setTestingConnection(true);
           console.log(`testing connection to ${info.endpoint}`);

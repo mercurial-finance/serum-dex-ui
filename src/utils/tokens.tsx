@@ -1,16 +1,17 @@
 import * as BufferLayout from 'buffer-layout';
 import bs58 from 'bs58';
-import {AccountInfo, Connection, PublicKey} from '@solana/web3.js';
-import {WRAPPED_SOL_MINT} from '@project-serum/serum/lib/token-instructions';
-import {TokenAccount} from './types';
-import {TOKEN_MINTS} from '@project-serum/serum';
-import {useAllMarkets, useCustomMarkets, useTokenAccounts} from './markets';
-import {getMultipleSolanaAccounts} from './send';
-import {useConnection} from './connection';
-import {useAsyncData} from './fetch-loop';
+import b64 from 'base64-js';
+import { AccountInfo, Connection, PublicKey } from '@solana/web3.js';
+import { WRAPPED_SOL_MINT } from '@project-serum/serum/lib/token-instructions';
+import { TokenAccount } from './types';
+import { TOKEN_MINTS } from '@project-serum/serum';
+import { useAllMarkets, useCustomMarkets, useTokenAccounts } from './markets';
+import { getMultipleSolanaAccounts } from './send';
+import { useConnection } from './connection';
+import { useAsyncData } from './fetch-loop';
 import tuple from 'immutable-tuple';
 import BN from 'bn.js';
-import {useMemo} from 'react';
+import { useMemo } from 'react';
 
 export const ACCOUNT_LAYOUT = BufferLayout.struct([
   BufferLayout.blob(32, 'mint'),
@@ -81,6 +82,7 @@ export async function getOwnedTokenAccounts(
     TOKEN_PROGRAM_ID.toBase58(),
     {
       commitment: connection.commitment,
+      encoding: 'base64',
       filters,
     },
   ]);
@@ -96,7 +98,7 @@ export async function getOwnedTokenAccounts(
     .map(({ pubkey, account: { data, executable, owner, lamports } }) => ({
       publicKey: new PublicKey(pubkey),
       accountInfo: {
-        data: bs58.decode(data),
+        data: bs58.decode(bs58.encode(b64.toByteArray(data[0]))),
         executable,
         owner: new PublicKey(owner),
         lamports,
